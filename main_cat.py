@@ -8,7 +8,7 @@ import time
 import argparse
 import configparser
 import numpy as np
-from apply_hod_cat import ModelClass
+from hod_pack import ModelClass
 
 
 #python main_cat.py --case 1 1> out.case1.out 2> err.case1.err &
@@ -113,7 +113,7 @@ def main():
 
 		if not os.path.isfile(outpath  + filename):
 			model_var = ModelClass(config_file, halo_files[i: i + 1])
-			dict_of_gsamples, dict_gal_type = model_var.populate_mock(best_fit_params, 0.00421339953605372, i)
+			dict_of_gsamples, dict_gal_type = model_var.populate_mock(best_fit_params, 0.00421339953605372, indx=i)
 			
 
 			for j, key in enumerate(dict_of_gsamples.keys()):

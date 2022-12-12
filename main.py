@@ -25,7 +25,7 @@ def main():
 		config_file = './configs/config.ini'
 
 	if not os.path.isfile(config_file):
-		print("ERROR: The config file: " + config_file + " does not exist!")
+		print(f"ERROR: The config file: {config_file} does not exist!")
 		sys.exit(1)
 
 	config_name = os.path.basename(config_file)
@@ -33,52 +33,50 @@ def main():
 	config = configparser.ConfigParser()
 	config.read(config_file)
 
-	outmultinest = config['params']['outmultinest']
-	if not os.path.isdir(outmultinest):
-		print("ERROR: The output dir: " + outmultinest + " does not exist!")
-		sys.exit(1)
-	if not os.path.isfile(outmultinest + config_name):
-		shutil.copy(config_file, outmultinest + config_name)
-	
-	covfile = config['params']['covfile']
-
-	if not os.path.isfile(covfile):
-		print("ERROR: The cov file: " + covfile + " does not exist!")
+	outpath_multinest = config['params']['outpath_multinest']
+	if not os.path.isdir(outpath_multinest):
+		print(f"ERROR: The output dir: {outpath_multinest} does not exist!")
 		sys.exit(1)
 
-	
+	if not os.path.isfile(outpath_multinest + config_name):
+		shutil.copy(config_file, outpath_multinest + config_name)
+
+	covariance_file = config['params']['covariance_file']
+	if not os.path.isfile(covariance_file):
+		print(f"ERROR: The cov file: {covariance_file} does not exist!")
+		sys.exit(1)
+
 	# LOAD the necessary data
-	print('STATUS: Select the halos and read the reference 2PCF...')
+	print('STATUS: Select the halos and read the reference...')
 	data_instance = DataClass(config_file)
-	ref_data_vector = np.append(data_instance.ref_data_vector, data_instance.ndens_avg)
 	print('STATUS: Loading the covariance matrix and invert it...')
-	cov = np.loadtxt(covfile)
+	cov = np.loadtxt(covariance_file)
 	icov = np.linalg.inv(cov)
-	print(ref_data_vector.shape, icov.shape[0])
+	print(data_instance.ref_data_vector.shape, icov.shape[0])
 
-	if len(ref_data_vector) != icov.shape[0]:
+	if len(data_instance.ref_data_vector) != icov.shape[0]:
 		print("ERROR: The number of data bins is different than the size of the Cov matrix!")
 		sys.exit(1)
 	
 	dens_instance = DensClass(config_file, data_instance.halo_mass_files)
 
-	print('STATUS: Loading the low resolution data and create the model...')
-	model_var = ModelClass(config_file, data_instance.halo_files)
+	print('STATUS: Create the model...')
+	model_instance = ModelClass(config_file, data_instance.halo_files, data_instance.halo_cat_list)
 
 	compute_2pcf_instance = ComputeCFClass(config_file)
 
 	compute_pspec_instance = ComputePKClass(config_file)
 	
-	chi2_var = Chi2Class(config_file, model_var, ref_data_vector, icov, compute_2pcf_instance, compute_pspec_instance, dens_instance)
+	chi2_var = Chi2Class(config_file, model_instance, data_instance.ref_data_vector, icov, compute_2pcf_instance, compute_pspec_instance, dens_instance)
 
 	#### BEGIN TEST
 	# ic = 0.8 #np.zeros(1)
-	# ic = [1.247154878486220220e+01, 1.755906988564419180e+00, 1.120699638752655503e+01, 4.587171390900019574e+00, 3.930904636318611756e-01, 1.108885645793013630e+00]
-	# print("TEST_INFO: My test chi2 is: ", chi2_var.compute_chi2(ic))
-	# sys.exit()
+	ic = [1.247878283003146649e+01, 1.780774210878682151e+00, 1.114040094979609385e+01, 4.845500406517473380e+00, 3.915263394920053264e-01, 1.094422425428754231e+00]
+	print("TEST_INFO: My test chi2 is: ", chi2_var.return_chi2_save_clustering(ic, "test"))
+	sys.exit()
 	#### END TEST
 
-	minimizer_var = ClassMinimizer(config_file, chi2_var)
+	# minimizer_var = ClassMinimizer(config_file, chi2_var)
 	#minimizer_var.one_param_minuit()
 	#minimizer_var.five_params_minuit()
 	#minimizer_var.nine_params_minuit()

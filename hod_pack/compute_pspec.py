@@ -85,7 +85,7 @@ class ComputePKClass():
 		return ca
 
 
-	def pspec_2(self, dict_of_gsamples, index):
+	def pspec(self, dict_of_gsamples, index):
 		lib = cdll.LoadLibrary("/global/homes/a/avariu/phd/chengscodes/powspec_cffi/libpowspec.so")
 		config_file = b'/global/homes/a/avariu/phd/chengscodes/powspec_cffi/etc/powspec_HODFIT.conf'
 		output_file = b'./temp_to_delete.temp'

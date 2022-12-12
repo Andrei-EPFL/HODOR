@@ -1,10 +1,11 @@
-# Generate Survey Mocks
+# Halo Occupation Distribution Optimization Routine
 
 ## Table of Contents
 
 -   [Introduction](#introduction)
 -   [Dependencies](#Dependencies)
 -   [Usage](#Usage)
+-   [Configuration parameters](#Configuration-parameters)
 -   [Co-Developers](#Co-Developers)
 -   [Acknowledgements](#Acknowledgements)
 
@@ -25,13 +26,18 @@ The dependencies of this code are as follows:
 
 -   [Python3](https://www.python.org/)  (>= 3.6)
 -   [NumPy](https://numpy.org/)
--   [argparse]
--   [configparser]
--   [sys]
--   [os]
--   [shutil]
+-   [halotools](https://anaconda.org/conda-forge/halotools)
+-   [h5py](https://anaconda.org/conda-forge/h5py)
+-   [pypowspec](https://github.com/dforero0896/pypowspec)
+-   [pyfcfc](https://github.com/dforero0896/pyfcfc)
+-   [MultiNest](https://github.com/farhanferoz/MultiNest)
+-   [PyMultiNest](https://github.com/JohannesBuchner/PyMultiNest)
 
-... TO CONTINUE ...
+Optional:
+-   [iminuit](https://anaconda.org/conda-forge/iminuit)
+-   [SciPy](https://scipy.org/)
+
+One can replace pyfcfc or pypowspec by different clustering codes. In [compute_2pcf_old.py](hod_pack/alternatives/compute_2pcf_old.py) file there is different ways to compute the 2PCF, e.g. [corrfunc](https://corrfunc.readthedocs.io/en/master/) or [halotools](https://anaconda.org/conda-forge/halotools). Similarly for P(k), in [compute_pspec_old_1.py](hod_pack/alternatives/compute_pspec_old_1.py) and [compute_pspec_old_2.py](hod_pack/alternatives/compute_pspec_old_2.py).
 
 ## Usage
 

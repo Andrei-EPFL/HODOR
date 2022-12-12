@@ -13,7 +13,8 @@ module swap PrgEnv-intel PrgEnv-gnu/6.0.5
 module load gsl/2.5
 export LD_LIBRARY_PATH=/global/homes/a/avariu/apps/MultiNest/lib:$LD_LIBRARY_PATH
 export OMP_NUM_THREADS=64
-source activate /global/cscratch1/sd/avariu/envs/
+source activate /global/cscratch1/sd/avariu/hodfit/
 export HDF5_USE_FILE_LOCKING=FALSE
 
 srun -n 1 python main.py --config ./configs/config_RSD_diff_1296_1000_0.5_6pars_pk.ini
+conda create -p /global/cscratch1/sd/avariu/hodfit --clone lazy-mpi4py
