@@ -70,18 +70,18 @@ def main():
 	chi2_var = Chi2Class(config_file, model_instance, data_instance.ref_data_vector, icov, compute_2pcf_instance, compute_pspec_instance, dens_instance)
 
 	#### BEGIN TEST
-	# ic = 0.8 #np.zeros(1)
-	ic = [1.247878283003146649e+01, 1.780774210878682151e+00, 1.114040094979609385e+01, 4.845500406517473380e+00, 3.915263394920053264e-01, 1.094422425428754231e+00]
-	print("TEST_INFO: My test chi2 is: ", chi2_var.return_chi2_save_clustering(ic, "test"))
-	sys.exit()
+	### This test is conceived for the 5 parameter HOD model, together with the velocity dispersion
+	# parameters = [1.247878283003146649e+01, 1.780774210878682151e+00, 1.114040094979609385e+01, 4.845500406517473380e+00, 3.915263394920053264e-01, 1.094422425428754231e+00]
+	# print("TEST_INFO: My test chi2 is: ", chi2_var.compute_chi2(parameters))
+	# sys.exit()
 	#### END TEST
 
-	# minimizer_var = ClassMinimizer(config_file, chi2_var)
+	minimizer_var = ClassMinimizer(config_file, chi2_var)
 	#minimizer_var.one_param_minuit()
 	#minimizer_var.five_params_minuit()
 	#minimizer_var.nine_params_minuit()
 
-	# minimizer_var.run_multinest()
+	minimizer_var.run_multinest()
 	# minimizer_var.analyse_multinest()
 	# minimizer_var.sample_values()
 	#minimizer_var.scipy_minimizer()

@@ -33,7 +33,7 @@ class ComputePKClass():
 
 		self.fit_kmin = config['pspec'].getfloat('fit_kmin')
 		self.fit_kmax = config['pspec'].getfloat('fit_kmax')
-		self.Lbox = config['params'].getfloat('Lbox')
+		self.Lbox = config['params'].getfloat('box_size')
 
 
 	def compute_catalog(self, x, y, z):
@@ -115,8 +115,7 @@ class ComputePKClass():
 		
 		### Go through all galaxy samples
 		for j, key in enumerate(dict_of_gsamples.keys()):
-			sample1 = dict_of_gsamples[key]
-			cata = self.compute_catalog(sample1[:, 0], sample1[:, 1], sample1[:, 2])
+			cata = self.compute_catalog(dict_of_gsamples[key]["x"], dict_of_gsamples[key]["y"], dict_of_gsamples[key]["z_rsd"])
 
 			nkbin = c_int(0)
 			nbin = 1000
