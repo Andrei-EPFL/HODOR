@@ -1,7 +1,6 @@
 import sys
 import configparser
 import numpy as np
-from halotools.mock_observables import tpcf_multipole
 
 sys.path.append("/global/homes/a/avariu/phd/danielscodes/pyfcfc/")
 from pyfcfc.boxes import py_compute_cf
@@ -33,20 +32,19 @@ class ComputeCFClass():
 
 	def compute_2pcf_pyfcfc(self, dict_of_gsamples, index):
 		""" Compute the 2PCF of galaxies given the
-		dictionary of galaxies. It uses the corrfunc package (which is much faster than halotools)
-		to compute the 2PCF, with a natural estimator """
-
-		if self.verbose:
-			print('\nSTATUS: Compute the 2pcf...')
+		dictionary of galaxies."""
 
 		xi0_arr = np.zeros((len(dict_of_gsamples.keys()), len(self.r)))
 		xi2_arr = np.zeros((len(dict_of_gsamples.keys()), len(self.r)))
 		xi4_arr = np.zeros((len(dict_of_gsamples.keys()), len(self.r)))
 
-		for j, key in enumerate(dict_of_gsamples.keys()):
-			if self.verbose:
-				print('INFO: >> Seed = {}...'.format(key))
-			xyz_gal = np.array([dict_of_gsamples[key]["x"], dict_of_gsamples[key]["y"], dict_of_gsamples[key]["z_rsd"]]).T.astype(np.double)
+		for j, key in enumerate(dict_of_gsamples.keys()):            
+			x_c, y_c, z_c = dict_of_gsamples[key]["x"], dict_of_gsamples[key]["y"], dict_of_gsamples[key]["z_rsd"]
+			x_c = (x_c + self.box_size) % self.box_size
+            y_c = (y_c + self.box_size) % self.box_size
+            z_c = (z_c + self.box_size) % self.box_size
+
+			xyz_gal = np.array([x_c, y_c, z_c]).T.astype(np.double)
 			print(xyz_gal.shape)
 			# Compute xi0, xi2, xi4
 			results = py_compute_cf([xyz_gal], [np.ones(xyz_gal.shape[0])], 

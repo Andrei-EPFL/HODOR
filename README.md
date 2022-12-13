@@ -29,15 +29,12 @@ The dependencies of this code are as follows:
 -   [halotools](https://anaconda.org/conda-forge/halotools)
 -   [h5py](https://anaconda.org/conda-forge/h5py)
 -   [pyfcfc](https://github.com/dforero0896/pyfcfc)
+-   [pypowspec](https://github.com/dforero0896/pypowspec)
 -   [MultiNest](https://github.com/farhanferoz/MultiNest)
 -   [PyMultiNest](https://github.com/JohannesBuchner/PyMultiNest)
-
 Optional:
 -   [iminuit](https://anaconda.org/conda-forge/iminuit)
 -   [SciPy](https://scipy.org/)
-
-ToDo:
--   [pypowspec](https://github.com/dforero0896/pypowspec)
 
 One can replace pyfcfc or pypowspec by different clustering codes. In [compute_2pcf_old.py](hod_pack/alternatives/compute_2pcf_old.py) file there is different ways to compute the 2PCF, e.g. [corrfunc](https://corrfunc.readthedocs.io/en/master/) or [halotools](https://anaconda.org/conda-forge/halotools). Similarly for P(k), in [compute_pspec_old_1.py](hod_pack/alternatives/compute_pspec_old_1.py) and [compute_pspec_old_2.py](hod_pack/alternatives/compute_pspec_old_2.py).
 
