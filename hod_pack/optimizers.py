@@ -2,7 +2,6 @@ import configparser
 import numpy as np
 # import scipy.optimize as opt
 # from iminuit import Minuit
-import pymultinest as pmn
 
 class ClassMinimizer():
 	""" A class containing more minimizers """
@@ -12,6 +11,10 @@ class ClassMinimizer():
 
 		self.chi2_instance = chi2_instance
 		self.ic = np.array([+10, 4, 12, 3, 0.5])#np.zeros(self.num_params) #[+0.4, 0, -1, -0.1, 0.71]#
+
+		self.case_ = config['params'].getint('case')
+		if self.case_ == 0:
+			import pymultinest as pmn
 
 		self.num_sampled_values = config['params'].getint('num_sampled_values')
 
@@ -38,6 +41,7 @@ class ClassMinimizer():
 		self.outbase = self.outpath_multinest + "MN_" + partname
 		print("INFO: The output for multinest is ", self.outbase)
 
+		
 
 	def write_info_minuit(self, m):
 		""" Write the info provided by Minuit """

@@ -15,6 +15,10 @@ class ComputePKClass():
         self.fit_kmax = config['pspec'].getfloat('fit_kmax')
         self.box_size = config['params'].getfloat('box_size')
 
+        self.config_file = config['pspec']["config_file"]
+        if not os.path.isfile(self.config_file):
+            print("ERROR: The power spectrum config file is not correctly give", flush=True)
+            sys.exit(1)
 
     def pspec(self, dict_of_gsamples, index):
         ### Multipoles list
@@ -31,7 +35,7 @@ class ComputePKClass():
             z_c = (z_c + self.box_size) % self.box_size
             
             w = np.ones(len(x_c))
-            pk = compute_auto_box(x_c.astype(np.float), y_c.astype(np.float), z_c.astype(np.float), w.astype(np.float), powspec_conf_file="/global/homes/a/avariu/desi_project_dir/FastPM_SLICS/config_files/pypowspec_hod.conf")
+            pk = compute_auto_box(x_c.astype(np.float), y_c.astype(np.float), z_c.astype(np.float), w.astype(np.float), powspec_conf_file=self.config_file)
         
             k = pk["k"]
             pk0 = pk["multipoles"][:, 0]

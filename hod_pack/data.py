@@ -9,9 +9,11 @@ from halotools.sim_manager import UserSuppliedHaloCatalog
 
 class DataClass():
 	""" The class that creates a list with the data to be fitted and the halo catalogs """
-	def __init__(self, config_file):
+	def __init__(self, config_file, halo_files=None):
 		config = configparser.ConfigParser()
 		config.read(config_file)
+
+		self.case_ = config['params'].getint('case')
 
 		self.halo_mass_file_template = config['params']['halo_mass_file']
 		self.halo_file_template      = config['params']['halo_file']
@@ -47,39 +49,43 @@ class DataClass():
 
 		self.LOS_list = []
 		self.NLOS = 0
+		if self.case_ == 0:
+			if config['params']['NLOS'] == "allxslics":
+				case = 21
+				self.NLOS = np.inf
+				self.halo_files, self.halo_mass_files, self.s_ref, self.k_ref, self.ref_clustering_vector = self.allxslics()
+			else:
+				try:
+					self.NLOS = config['params'].getint('NLOS')
+				except:
+					print("ERROR: NLOS is not an int or allxslics")
+					sys.exit(1)
 
-		if config['params']['NLOS'] == "allxslics":
-			case = 21
-			self.NLOS = np.inf
-			self.halo_files, self.halo_mass_files, self.s_ref, self.k_ref, self.ref_clustering_vector = self.allxslics()
-		else:
-			try:
-				self.NLOS = config['params'].getint('NLOS')
-			except:
-				print("ERROR: NLOS is not an int or allxslics")
-				sys.exit(1)
+				# try:
+				self.LOS_list = tuple(map(int, config.get('params', 'LOS').split(', ')))
+				# except:
+					# print("Warning: the LOS parameter in config file is empty.", flush=True)
+				
+				if self.NLOS == len(self.LOS_list):
+					case = 23
+					self.halo_files, self.halo_mass_files, self.s_ref, self.k_ref, self.ref_clustering_vector = self.nlos_loslist()
 
-			# try:
-			self.LOS_list = tuple(map(int, config.get('params', 'LOS').split(', ')))
-			# except:
-				# print("Warning: the LOS parameter in config file is empty.", flush=True)
-			
-			if self.NLOS == len(self.LOS_list):
-				case = 23
-				self.halo_files, self.halo_mass_files, self.s_ref, self.k_ref, self.ref_clustering_vector = self.nlos_loslist()
+				elif len(self.LOS_list) == 0:
+					case = 22
+					self.halo_files, self.halo_mass_files, self.s_ref, self.k_ref, self.ref_clustering_vector = self.allxslics(limit=self.NLOS)
 
-			elif len(self.LOS_list) == 0:
-				case = 22
-				self.halo_files, self.halo_mass_files, self.s_ref, self.k_ref, self.ref_clustering_vector = self.allxslics(limit=self.NLOS)
+				elif self.NLOS != len(self.LOS_list):
+					print("ERROR: The NLOS is different than the size of the LOS list")
+					sys.exit(1)
+			print("INFO: The list of LOS is the following: ", self.LOS_list)
 
-			elif self.NLOS != len(self.LOS_list):
-				print("ERROR: The NLOS is different than the size of the LOS list")
-				sys.exit(1)
-		print("INFO: The list of LOS is the following: ", self.LOS_list)
-
+			self.ref_data_vector = np.append(self.ref_clustering_vector, self.ndens_avg)
+		
+		elif self.case_ == 1:
+			self.halo_files = halo_files 
+		
 		self.halo_cat_list = self.compute_halocat()
 
-		self.ref_data_vector = np.append(self.ref_clustering_vector, self.ndens_avg)
 		# Case 1:
 		## One LOS multiple seeds
 
@@ -132,14 +138,17 @@ class DataClass():
 				print(f"INFO: Counter={counter}; LOS={los}")
 
 		range_s = (self.s_min <= s) & (s <= self.s_max)
-		mean_xi0 = np.mean(np.array(xi0_list), 0)[range_s]
-		mean_xi2 = np.mean(np.array(xi2_list), 0)[range_s]
-		mean_xi4 = np.mean(np.array(xi4_list), 0)[range_s]
-
 		range_k = (self.fit_kmin <= k) & (k <= self.fit_kmax)
-		mean_pk0 = np.mean(np.array(pk0_list), 0)[range_k]
-		mean_pk2 = np.mean(np.array(pk2_list), 0)[range_k]
-		mean_pk4 = np.mean(np.array(pk4_list), 0)[range_k]
+
+		if self.cf_multipole != -1:
+			mean_xi0 = np.mean(np.array(xi0_list), 0)[range_s]
+			mean_xi2 = np.mean(np.array(xi2_list), 0)[range_s]
+			mean_xi4 = np.mean(np.array(xi4_list), 0)[range_s]
+
+		if self.pk_multipole != -1:
+			mean_pk0 = np.mean(np.array(pk0_list), 0)[range_k]
+			mean_pk2 = np.mean(np.array(pk2_list), 0)[range_k]
+			mean_pk4 = np.mean(np.array(pk4_list), 0)[range_k]
 
 		if self.cf_multipole == -1:
 			cf_data_vector = np.empty(0)

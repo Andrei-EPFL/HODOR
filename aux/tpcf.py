@@ -5,8 +5,8 @@ import numpy as np
 # import Corrfunc.theory as cft
 
 
-# sys.path.append("/global/homes/a/avariu/phd/danielscodes/pyfcfc/")
-# from pyfcfc.boxes import py_compute_cf
+sys.path.append("/global/homes/a/avariu/phd/danielscodes/pyfcfc/")
+from pyfcfc.boxes import py_compute_cf
 
 class ComputeCFClass():
     """ The class that computes the 2PCF given the config file and a sample of galaxies """
@@ -34,6 +34,10 @@ class ComputeCFClass():
         """ Compute the 2PCF of galaxies given the
         dictionary of galaxies. It uses the corrfunc package (which is much faster than halotools)
         to compute the 2PCF, with a natural estimator """
+        
+        x_c = (x_c + self.box_size) % self.box_size
+        y_c = (y_c + self.box_size) % self.box_size
+        z_c = (z_c + self.box_size) % self.box_size
 
         xyz_gal = np.array([x_c, y_c, z_c]).T.astype(np.double)
         print(xyz_gal.shape)
@@ -127,16 +131,20 @@ class ComputeCFClass():
     
 
 def main():
-    cf_inst =  ComputeCFClass()
-    path = "/global/homes/a/avariu/desi_project_dir/FastPM_SLICS/SLICS/galaxy/1.041halo.dat_LOS985.gcat"
-    
-    x_c, y_c, z_c = np.loadtxt(path, usecols=(0, 1, 3), unpack=True)
-    
-    # s, cf0, cf2, cf4 = cf_inst.compute_2pcf_pyfcfc(x_c, y_c, z_c)
-    # np.savetxt("./test/1.041halo.dat_LOS985_pyfcfc.gcat", np.array([s, cf0, cf2, cf4]).T)
+    import glob
+    import os
 
-    s, cf0, cf2, cf4 = cf_inst.compute_2pcf_corrfunc(x_c, y_c, z_c)
-    np.savetxt("./test/1.041halo.dat_LOS985_corrfunc.gcat", np.array([s, cf0, cf2, cf4]).T)
+    cf_inst =  ComputeCFClass()
+    path = "/global/homes/a/avariu/desi_project_dir/FastPM_SLICS/SLICS/galaxy/*"
+    
+    files = glob.glob(path)
+    for file_ in files:
+        x_c, y_c, z_c = np.loadtxt(file_, usecols=(0, 1, 2), unpack=True)
+        s, cf0, cf2, cf4 = cf_inst.compute_2pcf_pyfcfc(x_c, y_c, z_c)
+        np.savetxt(f"/global/homes/a/avariu/desi_project_dir/FastPM_SLICS/SLICS/2pcf/real/{os.path.basename(file_)}", np.array([s, cf0, cf2, cf4]).T)
+
+    # s, cf0, cf2, cf4 = cf_inst.compute_2pcf_corrfunc(x_c, y_c, z_c)
+    # np.savetxt("./test/1.041halo.dat_LOS985_corrfunc.gcat", np.array([s, cf0, cf2, cf4]).T)
 
 def plot_aux(ax, file, usecols, color, label):
     s, cf0, cf2, cf4 = np.loadtxt(file, usecols=usecols, unpack=True)
@@ -193,5 +201,5 @@ def plot():
     fig.savefig("./test/tpcf.png")
 
 if __name__ == '__main__':
-    # main()
-    plot()
+    main()
+    # plot()

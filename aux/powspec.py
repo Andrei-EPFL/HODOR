@@ -1,28 +1,28 @@
 import sys
 import numpy as np
-from ctypes import *
+# from ctypes import *
 
 
-class Data(Structure):
-    _fields_ = [
-        ("x", c_double * 3),
-        ("w", c_double)
-    ]
+# class Data(Structure):
+#     _fields_ = [
+#         ("x", c_double * 3),
+#         ("w", c_double)
+#     ]
 
 
-class Cata(Structure):
-    _fields_ = [
-        ("num", c_int), # number of data catalogs to be read
-        ("data", POINTER(POINTER(Data))),
-        ("rand", POINTER(POINTER(Data))),
-        ("ndata", POINTER(c_size_t)),    
-        ("nrand", POINTER(c_size_t)),
-        ("wdata", POINTER(c_double)),
-        ("wrand", POINTER(c_double)),
-        ("alpha", POINTER(c_double)),
-        ("shot", POINTER(c_double)),
-        ("norm", POINTER(c_double)),
-    ]
+# class Cata(Structure):
+#     _fields_ = [
+#         ("num", c_int), # number of data catalogs to be read
+#         ("data", POINTER(POINTER(Data))),
+#         ("rand", POINTER(POINTER(Data))),
+#         ("ndata", POINTER(c_size_t)),    
+#         ("nrand", POINTER(c_size_t)),
+#         ("wdata", POINTER(c_double)),
+#         ("wrand", POINTER(c_double)),
+#         ("alpha", POINTER(c_double)),
+#         ("shot", POINTER(c_double)),
+#         ("norm", POINTER(c_double)),
+#     ]
 
 
 class ComputePKClass():
@@ -32,116 +32,116 @@ class ComputePKClass():
         self.box_size = 505
 
 
-    def compute_catalog(self, x, y, z):
+    # def compute_catalog(self, x, y, z):
 
-        x = x % self.box_size
-        y = y % self.box_size
-        z = z % self.box_size
+    #     x = x % self.box_size
+    #     y = y % self.box_size
+    #     z = z % self.box_size
 
-        num = 1
-        ndata = len(x)
-        nrand = 0
-        wdata = ndata
-        wrand = 0.
-        alpha = 0.
-        shot = 0.
-        norm = 0.
+    #     num = 1
+    #     ndata = len(x)
+    #     nrand = 0
+    #     wdata = ndata
+    #     wrand = 0.
+    #     alpha = 0.
+    #     shot = 0.
+    #     norm = 0.
 
 
-        data_instance = Data * ndata
-        data_array = data_instance()
+    #     data_instance = Data * ndata
+    #     data_array = data_instance()
 
-        cata_instance = Cata
-        ca = cata_instance()
+    #     cata_instance = Cata
+    #     ca = cata_instance()
 
-        ca.num = c_int(num)
+    #     ca.num = c_int(num)
         
-        ca.data.contents = pointer(data_array)
-        ca.rand= None
+    #     ca.data.contents = pointer(data_array)
+    #     ca.rand= None
         
-        ca.ndata.contents = c_size_t(ndata)
-        ca.nrand.contents = c_double(nrand)
+    #     ca.ndata.contents = c_size_t(ndata)
+    #     ca.nrand.contents = c_double(nrand)
 
-        ca.wdata.contents = c_double(wdata)
-        ca.wrand.contents = c_double(wrand)
+    #     ca.wdata.contents = c_double(wdata)
+    #     ca.wrand.contents = c_double(wrand)
         
-        ca.alpha.contents = c_double(alpha)
-        ca.shot.contents = c_double(shot)
-        ca.norm.contents = c_double(norm)
+    #     ca.alpha.contents = c_double(alpha)
+    #     ca.shot.contents = c_double(shot)
+    #     ca.norm.contents = c_double(norm)
 
-        for i in range(ndata):
-            da = ca.data[0][i]
+    #     for i in range(ndata):
+    #         da = ca.data[0][i]
 
-            da.w = c_double(1.)
-            da.x[0] = c_double(x[i])
-            da.x[1] = c_double(y[i])
-            da.x[2] = c_double(z[i])
+    #         da.w = c_double(1.)
+    #         da.x[0] = c_double(x[i])
+    #         da.x[1] = c_double(y[i])
+    #         da.x[2] = c_double(z[i])
     
     
-        return ca
+    #     return ca
 
 
-    def pspec_old(self, x_c, y_c, z_c):
-        lib = cdll.LoadLibrary("/global/homes/a/avariu/phd/chengscodes/powspec_cffi/libpowspec.so")
-        config_file = b'/global/homes/a/avariu/phd/chengscodes/powspec_cffi/etc/powspec_HODFIT.conf'
-        output_file = b'./temp_to_delete.temp'
-        input_file =  b'/global/homes/a/avariu/phd/chengscodes/powspec_cffi/etc/powspec_HODFIT.conf'
+    # def pspec_old(self, x_c, y_c, z_c):
+    #     lib = cdll.LoadLibrary("/global/homes/a/avariu/phd/chengscodes/powspec_cffi/libpowspec.so")
+    #     config_file = b'/global/homes/a/avariu/phd/chengscodes/powspec_cffi/etc/powspec_HODFIT.conf'
+    #     output_file = b'./temp_to_delete.temp'
+    #     input_file =  b'/global/homes/a/avariu/phd/chengscodes/powspec_cffi/etc/powspec_HODFIT.conf'
 
-        ### Arguments
-        size_text = len(config_file)
-        arg0  = create_string_buffer(b'test', size_text)
-        arg1  = create_string_buffer(b'-c', size_text)
-        arg2 = create_string_buffer(config_file)
+    #     ### Arguments
+    #     size_text = len(config_file)
+    #     arg0  = create_string_buffer(b'test', size_text)
+    #     arg1  = create_string_buffer(b'-c', size_text)
+    #     arg2 = create_string_buffer(config_file)
 
-        arg3  = create_string_buffer(b'-d', size_text)
-        arg4  = create_string_buffer(input_file, size_text)
+    #     arg3  = create_string_buffer(b'-d', size_text)
+    #     arg4  = create_string_buffer(input_file, size_text)
 
-        arg5  = create_string_buffer(b'-a', size_text)
-        arg6  = create_string_buffer(output_file, size_text)
+    #     arg5  = create_string_buffer(b'-a', size_text)
+    #     arg6  = create_string_buffer(output_file, size_text)
 
-        N_args = 7
+    #     N_args = 7
 
-        args_pointer_instance = POINTER(c_char) * N_args
-        args_pointer_arr_to_send = args_pointer_instance(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
+    #     args_pointer_instance = POINTER(c_char) * N_args
+    #     args_pointer_arr_to_send = args_pointer_instance(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
 
         
-        ### Go through all galaxy samples
-        cata = self.compute_catalog(x_c, y_c, z_c)
+    #     ### Go through all galaxy samples
+    #     cata = self.compute_catalog(x_c, y_c, z_c)
 
-        nkbin = c_int(0)
-        nbin = 1000
-        pk_instance = c_double * (4 * nbin)
-        pk_array = pk_instance()
+    #     nkbin = c_int(0)
+    #     nbin = 1000
+    #     pk_instance = c_double * (4 * nbin)
+    #     pk_array = pk_instance()
 
-        lib.compute_pk.restype = c_int
+    #     lib.compute_pk.restype = c_int
 
-        value_return = lib.compute_pk(pointer(cata), pointer(nkbin), pointer(pk_array), c_int(N_args), args_pointer_arr_to_send)
-        if value_return == 0:
-            print("ERROR: the pk code crashed")
-            del pk_array
-            del cata
-            return 0, 0, 0, 0
+    #     value_return = lib.compute_pk(pointer(cata), pointer(nkbin), pointer(pk_array), c_int(N_args), args_pointer_arr_to_send)
+    #     if value_return == 0:
+    #         print("ERROR: the pk code crashed")
+    #         del pk_array
+    #         del cata
+    #         return 0, 0, 0, 0
 
-        nbin = nkbin.value
+    #     nbin = nkbin.value
 
-        ### From C to NumPy Array
-        k = np.zeros(nbin)
-        pk0 = np.zeros(nbin)
-        pk2 = np.zeros(nbin)
-        pk4 = np.zeros(nbin)
+    #     ### From C to NumPy Array
+    #     k = np.zeros(nbin)
+    #     pk0 = np.zeros(nbin)
+    #     pk2 = np.zeros(nbin)
+    #     pk4 = np.zeros(nbin)
         
-        for i in range(nbin):
-            k[i]   = pk_array[i]
-            pk0[i] = pk_array[nbin + i]
-            pk2[i] = pk_array[2 * nbin + i]
-            pk4[i] = pk_array[3 * nbin + i]
+    #     for i in range(nbin):
+    #         k[i]   = pk_array[i]
+    #         pk0[i] = pk_array[nbin + i]
+    #         pk2[i] = pk_array[2 * nbin + i]
+    #         pk4[i] = pk_array[3 * nbin + i]
 
-        del pk_array
-        # del cata.data
-        del cata
-        ## import gc
-        ## gc.collect()
-        return k, pk0, pk2, pk4
+    #     del pk_array
+    #     # del cata.data
+    #     del cata
+    #     ## import gc
+    #     ## gc.collect()
+    #     return k, pk0, pk2, pk4
 
 
     def pspec_new(self, x_c, y_c, z_c, outfile):
@@ -154,27 +154,46 @@ class ComputePKClass():
         
         w = np.ones(len(x_c))
 
-        pk = compute_auto_box(x_c, y_c, z_c, w, powspec_conf_file="/global/homes/a/avariu/desi_project_dir/FastPM_SLICS/config_files/pypowspec_hod.conf", output_file=f"./test/{outfile}")       
+        pk = compute_auto_box(x_c, y_c, z_c, w, powspec_conf_file="/global/homes/a/avariu/desi_project_dir/FastPM_SLICS/after_14_DEC_2022/config_files/pypowspec_hod.conf", output_file=f"/global/homes/a/avariu/desi_project_dir/FastPM_SLICS/SLICS/halo/pspec_precorrection_Peak_rand/{outfile}")       
 
-        k = pk["k"]
-        pk0 = pk["multipoles"][:, 0]
-        pk2 = pk["multipoles"][:, 1]
-        pk4 = pk["multipoles"][:, 2]
+        # k = pk["k"]
+        # pk0 = pk["multipoles"][:, 0]
+        # pk2 = pk["multipoles"][:, 1]
+        # pk4 = pk["multipoles"][:, 2]
 
 
 
 def main():
-    pk_inst =  ComputePKClass()
-    path = "/global/homes/a/avariu/desi_project_dir/FastPM_SLICS/SLICS/galaxy/1.041halo.dat_LOS985.gcat"
-    
-    x_c, y_c, z_c = np.loadtxt(path, usecols=(0, 1, 3), unpack=True)
-    
-    # k, pk0, pk2, pk4 = pk_inst.pspec_old(x_c, y_c, z_c)
+    import glob
+    import os
 
+    pk_inst =  ComputePKClass()
+    path = "/global/homes/a/avariu/desi_project_dir/FastPM_SLICS/SLICS/galaxy/"
+    
+    # files = glob.glob(path)
+    # for file_ in files:
+        # x_c, y_c, z_c = np.loadtxt(file_, usecols=(0, 1, 2), unpack=True)
+        # pk_inst.pspec_new(x_c, y_c, z_c, os.path.basename(file_))
+
+    files = glob.glob("/global/project/projectdirs/desi/cosmosim/cov_mat_challenge/cubic_box/SLICS/haloes/redshift1.041Halos/1.041halo.dat_LOS*.fits")
+    # files = glob.glob("/global/project/projectdirs/desi/cosmosim/cov_mat_challenge/cubic_box/SLICS/haloes_postcorrection/redshift1.041Halos/1.041halo.dat_LOS*.fits")
+    from astropy.io import fits
+
+    for file_ in files:
+        if os.path.isfile(path + os.path.basename(file_)[:-5]+".gcat"):
+            f = fits.open(file_)
+            data = f[1].data
+            x, y, z = data["Peak_X"], data["Peak_Y"], data["Peak_Z"]
+            x, y, z = x + np.random.rand(len(x))*0.165, y + np.random.rand(len(y))*0.165, z + np.random.rand(len(z))*0.165
+            
+            pk_inst.pspec_new(x.astype(np.float), y.astype(np.float), z.astype(np.float), os.path.basename(file_))
+            # pk_inst.pspec_new(data["CoM_X"].astype(np.float), data["CoM_Y"].astype(np.float), data["CoM_Z"].astype(np.float), os.path.basename(file_))
+            f.close()
+
+    # k, pk0, pk2, pk4 = pk_inst.pspec_old(x_c, y_c, z_c)
     # np.savetxt("./test/1.041halo.dat_LOS985_pow_old.gcat", np.array([k, pk0, pk2, pk4]).T)
 
 
-    pk_inst.pspec_new(x_c, y_c, z_c, "/1.041halo.dat_LOS985_pypow_new.gcat")
 
 def plot_aux(ax, file, usecols, color, label):
     k, pk0, pk2, pk4 = np.loadtxt(file, usecols=usecols, unpack=True)
@@ -243,5 +262,5 @@ def plot():
     fig.savefig("./test/powspec.png")
 
 if __name__ == '__main__':
-    # main()
-    plot()
+    main()
+    # plot()
