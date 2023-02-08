@@ -2,19 +2,17 @@ import configparser
 import numpy as np
 # import scipy.optimize as opt
 # from iminuit import Minuit
+import pymultinest as pmn
 
 class ClassMinimizer():
 	""" A class containing more minimizers """
+
 	def __init__(self, config_file, chi2_instance):
 		config = configparser.ConfigParser()
 		config.read(config_file)
 
 		self.chi2_instance = chi2_instance
 		self.ic = np.array([+10, 4, 12, 3, 0.5])#np.zeros(self.num_params) #[+0.4, 0, -1, -0.1, 0.71]#
-
-		self.case_ = config['params'].getint('case')
-		if self.case_ == 0:
-			import pymultinest as pmn
 
 		self.num_sampled_values = config['params'].getint('num_sampled_values')
 
@@ -201,18 +199,18 @@ class ClassMinimizer():
 		res = pmn.Analyzer(outputfiles_basename=self.outbase, n_params=self.num_params)
 		best_fit_params = res.get_best_fit()['parameters']
 
-		[s, xi0, xi2, xi4], [k, pk0, pk2, pk4], chi2, [nsat, ncen] = self.chi2_instance.compute_best_fit(best_fit_params)
+		# [s, xi0, xi2, xi4], [k, pk0, pk2, pk4], chi2, [nsat, ncen] = self.chi2_instance.compute_best_fit(best_fit_params)
 
-		print(f"INFO: The chi2 for {self.outbase} is equal to {chi2} ")
+		# print(f"INFO: The chi2 for {self.outbase} is equal to {chi2} ")
 		print(("INFO: The best fit parameters are: [" + ', '.join(['%f']*len(best_fit_params))+"]") % tuple(best_fit_params))
 
-		best_pars_str = ' '.join(['%f']*len(best_fit_params)) % tuple(best_fit_params)  + f"; chi2={chi2}"
+		# best_pars_str = ' '.join(['%f']*len(best_fit_params)) % tuple(best_fit_params)  + f"; chi2={chi2}"
 
-		np.savetxt(self.outbase + 'best_cf.dat', np.transpose([s, xi0, xi2, xi4]), fmt='%.8g', header=best_pars_str)
-		np.savetxt(self.outbase + 'best_pk.dat', np.transpose([k, pk0, pk2, pk4]), fmt='%.8g', header=best_pars_str)
+		# np.savetxt(self.outbase + 'best_cf.dat', np.transpose([s, xi0, xi2, xi4]), fmt='%.8g', header=best_pars_str)
+		# np.savetxt(self.outbase + 'best_pk.dat', np.transpose([k, pk0, pk2, pk4]), fmt='%.8g', header=best_pars_str)
 
-		ratio_arr = nsat / (nsat + ncen)
-		np.savetxt(self.outpath_info + "/chi2_nsat_ncen_satfrac.txt", np.array([chi2, nsat, ncen, ratio]).T)
+		# ratio_arr = nsat / (nsat + ncen)
+		# np.savetxt(self.outpath_info + "/chi2_nsat_ncen_satfrac.txt", np.array([chi2, nsat, ncen, ratio]).T)
 
 		param_names = ' '.join(self.parameters_names)
 		np.savetxt(self.outpath_info + "/best_fit_params.txt", np.array(best_fit_params).reshape(1, len(best_fit_params)), header=param_names)

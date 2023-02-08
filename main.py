@@ -8,7 +8,8 @@ import argparse
 import configparser
 import numpy as np
 
-from hod_pack import *
+from mods_hod import *
+from mods_calc import *
 
 def main():
 	""" Main function of the code"""

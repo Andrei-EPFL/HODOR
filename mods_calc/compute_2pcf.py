@@ -45,7 +45,7 @@ class ComputeCFClass():
             z_c = (z_c + self.box_size) % self.box_size
 
             xyz_gal = np.array([x_c, y_c, z_c]).T.astype(np.double)
-            print(xyz_gal.shape)
+            # print(xyz_gal.shape)
             # Compute xi0, xi2, xi4
             results = py_compute_cf([xyz_gal], [np.ones(xyz_gal.shape[0])], 
                         self.s_bins.copy(), 
@@ -58,8 +58,8 @@ class ComputeCFClass():
                         multipole = [0, 2, 4], # Multipoles to compute
                         cf = ['DD / @@ - 1'])			
             
-            print(results["s"])
-            print(np.array(results["multipoles"][0][0][:]))
+            # print(results["s"])
+            # print(np.array(results["multipoles"][0][0][:]))
             xi0_arr[j] = np.array(results["multipoles"][0][0]).copy()
             xi2_arr[j] = np.array(results["multipoles"][0][1]).copy()
             xi4_arr[j] = np.array(results["multipoles"][0][2]).copy()
