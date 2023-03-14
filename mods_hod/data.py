@@ -63,6 +63,7 @@ class DataClass():
 
 				# try:
 				self.LOS_list = tuple(map(int, config.get('params', 'LOS').split(', ')))
+
 				# except:
 					# print("Warning: the LOS parameter in config file is empty.", flush=True)
 				
@@ -116,11 +117,12 @@ class DataClass():
 		pk4_list = []
 		
 		counter = 0
-		
+		verify = 0
 		for los in self.LOS_list:
 			if os.path.isfile(self.reference_cf_template.format(los)) and os.path.isfile(self.halo_file_template.format(los)) \
 			 and os.path.isfile(self.reference_pk_template.format(los)) and os.path.isfile(self.halo_mass_file_template.format(los)):
 
+				verify = 1
 				ret_halo_files.append(self.halo_file_template.format(los))
 				ret_halo_mass_files.append(self.halo_mass_file_template.format(los))
 				
@@ -133,9 +135,23 @@ class DataClass():
 				pk0_list.append(pk0)
 				pk2_list.append(pk2)
 				pk4_list.append(pk4)
-				
 				counter += 1
 				print(f"INFO: Counter={counter}; LOS={los}")
+
+		if verify == 0:
+			files_ = ""
+			for los in self.LOS_list:
+				if not os.path.isfile(self.reference_cf_template.format(los)):
+					files_ += " " + self.reference_cf_template.format(los)
+				if not os.path.isfile(self.halo_file_template.format(los)):
+					files_ += " " + self.halo_file_template.format(los)
+				if not os.path.isfile(self.reference_pk_template.format(los)):
+					files_ += " " + self.reference_pk_template.format(los)
+				if not os.path.isfile(self.halo_mass_file_template.format(los)):
+					files_ += " " + self.halo_mass_file_template.format(los)
+
+			print("ERROR: No reference file or no halo or halo mass files were found. Please check the configuration file. These files do not exist: ", files_)
+			sys.exit(1)
 
 		range_s = (self.s_min <= s) & (s <= self.s_max)
 		range_k = (self.fit_kmin <= k) & (k <= self.fit_kmax)
