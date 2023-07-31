@@ -18,7 +18,7 @@ The code has been conceived to by highly adaptable to different data-sets, diffe
 
 If you use this tool in research work that results in publications, please cite the following paper:
 
-> Variu et al., in preparation (2023).
+> [Variu et al.](https://arxiv.org/abs/2307.14197).
 
 ## Dependencies
 
