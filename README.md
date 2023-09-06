@@ -38,6 +38,9 @@ Optional:
 
 One can replace pyfcfc or pypowspec by different clustering codes. In [compute_2pcf_old.py](hod_pack/alternatives/compute_2pcf_old.py) file there is different ways to compute the 2PCF, e.g. [corrfunc](https://corrfunc.readthedocs.io/en/master/) or [halotools](https://anaconda.org/conda-forge/halotools). Similarly for P(k), in [compute_pspec_old_1.py](hod_pack/alternatives/compute_pspec_old_1.py) and [compute_pspec_old_2.py](hod_pack/alternatives/compute_pspec_old_2.py).
 
+All packages are installed in a [docker](https://www.docker.com/) image that one can pull from [here](https://hub.docker.com/repository/docker/avariu/hodor_new/general).
+For a tutorial on how to use docker images on the NERSC super-computer, one can read [this](https://docs.nersc.gov/development/shifter/how-to-use/). However, this [batch-script](aux/batchscript_nersc_perl_shifter_img.sh) is already using the docker image on NERSC.
+
 ## Usage
 
 After downloading the code, one has to fill in the configuration file and run [main.py](main.py):
