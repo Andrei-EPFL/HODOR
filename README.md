@@ -19,6 +19,10 @@ The code has been conceived to by highly adaptable to different data-sets, diffe
 If you use this tool in research work that results in publications, please cite the following paper:
 
 > Variu et al. 2023 [arXiv:2307.14197](https://arxiv.org/abs/2307.14197).
+> 
+> Variu A., Alam S., Zhao C., Chuang C.-H., Yu Y., Forero-S{\'a}nchez D., Ding Z., et al., 2024, MNRAS, 527, 11539. doi:10.1093/mnras/stad3742
+> 
+> NASA/ADS [link](https://ui.adsabs.harvard.edu/abs/2024MNRAS.52711539V/exportcitation)
 
 ## Dependencies
 
